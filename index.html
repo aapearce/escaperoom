@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Traveler's Escape Room</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Main Menu -->
+        <div id="main-menu" class="screen active">
+            <div class="workshop-container">
+                <div class="logo-container">
+                    <h1 class="game-title">⚙️ Time Traveler's Escape Room ⚙️</h1>
+                    <p class="tagline">Escape through history, one puzzle at a time</p>
+                </div>
+                
+                <div class="menu-buttons">
+                    <button class="menu-btn" onclick="game.showRoomSelect()">▶ Start Adventure</button>
+                    <button class="menu-btn" onclick="game.showInstructions()">📖 How to Play</button>
+                    <button class="menu-btn" onclick="game.showProgress()">🏆 My Progress</button>
+                </div>
+
+                <div class="workshop-decorations">
+                    <div class="gear gear-1">⚙️</div>
+                    <div class="gear gear-2">⚙️</div>
+                    <div class="gear gear-3">⚙️</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Instructions Screen -->
+        <div id="instructions" class="screen">
+            <div class="content-container">
+                <h2>How to Play</h2>
+                <div class="instructions-content">
+                    <div class="instruction-block">
+                        <span class="instruction-icon">🔍</span>
+                        <h3>Explore</h3>
+                        <p>Click on objects to examine them. Hidden clues are everywhere!</p>
+                    </div>
+                    <div class="instruction-block">
+                        <span class="instruction-icon">🧩</span>
+                        <h3>Solve Puzzles</h3>
+                        <p>Use historical knowledge and logic to solve each challenge.</p>
+                    </div>
+                    <div class="instruction-block">
+                        <span class="instruction-icon">💡</span>
+                        <h3>Get Hints</h3>
+                        <p>Stuck? Use hints to learn more about the history and get help.</p>
+                    </div>
+                    <div class="instruction-block">
+                        <span class="instruction-icon">🚪</span>
+                        <h3>Escape</h3>
+                        <p>Solve all puzzles to unlock the portal and return home!</p>
+                    </div>
+                </div>
+                <button class="back-btn" onclick="game.showMainMenu()">← Back to Menu</button>
+            </div>
+        </div>
+
+        <!-- Room Selection -->
+        <div id="room-select" class="screen">
+            <div class="content-container">
+                <h2>Choose Your Era</h2>
+                <div class="rooms-grid">
+                    <div class="room-card" onclick="game.startRoom('egypt')">
+                        <div class="room-icon">🏺</div>
+                        <h3>Ancient Egypt</h3>
+                        <p class="room-subtitle">The Pharaoh's Lost Cipher</p>
+                        <div class="room-stats">
+                            <span id="egypt-completion">⭐ Not completed</span>
+                            <span id="egypt-time"></span>
+                        </div>
+                        <div class="room-difficulty">Difficulty: ⭐⭐</div>
+                    </div>
+                    <div class="room-card" onclick="game.startRoom('renaissance')">
+                        <div class="room-icon">🎨</div>
+                        <h3>Renaissance Italy</h3>
+                        <p class="room-subtitle">Da Vinci's Secret Workshop</p>
+                        <div class="room-stats">
+                            <span id="renaissance-completion">⭐ Not completed</span>
+                            <span id="renaissance-time"></span>
+                        </div>
+                        <div class="room-difficulty">Difficulty: ⭐⭐⭐</div>
+                    </div>
+                    <div class="room-card" onclick="game.startRoom('space')">
+                        <div class="room-icon">🚀</div>
+                        <h3>Space Race Era</h3>
+                        <p class="room-subtitle">Mission Control Lockdown</p>
+                        <div class="room-stats">
+                            <span id="space-completion">⭐ Not completed</span>
+                            <span id="space-time"></span>
+                        </div>
+                        <div class="room-difficulty">Difficulty: ⭐⭐⭐⭐</div>
+                    </div>
+                </div>
+                <button class="back-btn" onclick="game.showMainMenu()">← Back to Menu</button>
+            </div>
+        </div>
+
+        <!-- Progress Screen -->
+        <div id="progress" class="screen">
+            <div class="content-container">
+                <h2>Your Progress</h2>
+                <div class="progress-stats">
+                    <div class="stat-card">
+                        <div class="stat-number" id="total-escapes">0</div>
+                        <div class="stat-label">Rooms Escaped</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="total-hints">0</div>
+                        <div class="stat-label">Hints Used</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="best-time">--:--</div>
+                        <div class="stat-label">Best Time</div>
+                    </div>
+                </div>
+                <div class="achievements">
+                    <h3>Achievements</h3>
+                    <div id="achievements-list" class="achievements-grid"></div>
+                </div>
+                <button class="back-btn" onclick="game.showMainMenu()">← Back to Menu</button>
+            </div>
+        </div>
+
+        <!-- Game Room -->
+        <div id="game-room" class="screen">
+            <div class="game-header">
+                <div class="header-left">
+                    <button class="icon-btn" onclick="game.pauseGame()" title="Pause">⏸️</button>
+                    <h3 id="room-title">Room Name</h3>
+                </div>
+                <div class="header-right">
+                    <div class="timer" id="timer">00:00</div>
+                    <div class="hints-available">
+                        <span id="hints-count">3</span> 💡
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-content">
+                <div class="room-view" id="room-view">
+                    <!-- Room content will be dynamically loaded -->
+                </div>
+
+                <div class="game-sidebar">
+                    <div class="clues-panel">
+                        <h4>📝 Clues Found</h4>
+                        <div id="clues-list" class="clues-list">
+                            <p class="no-clues">No clues found yet...</p>
+                        </div>
+                    </div>
+                    <div class="inventory-panel">
+                        <h4>🎲 Inventory</h4>
+                        <div id="inventory" class="inventory-grid">
+                            <p class="no-items">No items yet...</p>
+                        </div>
+                    </div>
+                    <button class="hint-btn" onclick="game.useHint()">💡 Get Hint</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Puzzle Modal -->
+        <div id="puzzle-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="puzzle-title">Puzzle</h3>
+                    <button class="close-btn" onclick="game.closePuzzle()">✕</button>
+                </div>
+                <div class="modal-body" id="puzzle-content">
+                    <!-- Puzzle content loaded dynamically -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Pause Menu -->
+        <div id="pause-menu" class="modal">
+            <div class="modal-content pause-content">
+                <h3>Game Paused</h3>
+                <div class="pause-buttons">
+                    <button class="menu-btn" onclick="game.resumeGame()">▶ Resume</button>
+                    <button class="menu-btn" onclick="game.restartRoom()">🔄 Restart Room</button>
+                    <button class="menu-btn" onclick="game.quitToMenu()">🏠 Main Menu</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success Modal -->
+        <div id="success-modal" class="modal">
+            <div class="modal-content success-content">
+                <h2>🎉 Escape Successful! 🎉</h2>
+                <div id="success-stats"></div>
+                <div class="success-buttons">
+                    <button class="menu-btn" onclick="game.nextRoom()">Next Room →</button>
+                    <button class="menu-btn" onclick="game.showRoomSelect()">Choose Room</button>
+                    <button class="menu-btn" onclick="game.showMainMenu()">Main Menu</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chronos Assistant -->
+        <div id="chronos-assistant" class="chronos-bubble hidden">
+            <div class="chronos-avatar">🤖</div>
+            <div class="chronos-message" id="chronos-message"></div>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+    <script src="rooms/egypt.js"></script>
+    <script src="rooms/renaissance.js"></script>
+    <script src="rooms/space.js"></script>
+</body>
+</html>
