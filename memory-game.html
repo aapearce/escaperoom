@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stranger Things Memory Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: radial-gradient(ellipse at center, #1a0000 0%, #000000 100%);
+            color: #ff6b6b;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Upside Down webbing effect */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                repeating-linear-gradient(90deg, transparent, transparent 98px, rgba(0,0,0,0.4) 98px, rgba(0,0,0,0.4) 100px),
+                repeating-linear-gradient(0deg, transparent, transparent 98px, rgba(0,0,0,0.4) 98px, rgba(0,0,0,0.4) 100px);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Glowing portal effect */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255,0,0,0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: portal-pulse 3s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes portal-pulse {
+            0%, 100% { 
+                opacity: 0.4;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% { 
+                opacity: 0.7;
+                transform: translate(-50%, -50%) scale(1.2);
+            }
+        }
+
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+            75% { opacity: 0.9; }
+        }
+
+        @keyframes glow {
+            0%, 100% { 
+                text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000;
+            }
+            50% { 
+                text-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000, 0 0 60px #ff0000;
+            }
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: flicker 4s infinite;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #ff0000;
+            text-shadow: 0 0 10px #ff0000;
+            margin-bottom: 10px;
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            color: #ffaaaa;
+            font-style: italic;
+        }
+
+        .game-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(139, 0, 0, 0.3);
+            border: 2px solid #8b0000;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #ff9999;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            color: #ff0000;
+            font-weight: bold;
+            text-shadow: 0 0 10px #ff0000;
+        }
+
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 10px;
+            margin-bottom: 30px;
+            perspective: 1000px;
+        }
+
+        .memory-card {
+            aspect-ratio: 1;
+            background: rgba(139, 0, 0, 0.4);
+            border: 3px solid #8b0000;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            transform-style: preserve-3d;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.2);
+        }
+
+        .memory-card:hover:not(.flipped):not(.matched) {
+            border-color: #ff0000;
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.5);
+            transform: translateY(-5px);
+        }
+
+        .memory-card.flipped,
+        .memory-card.matched {
+            background: rgba(139, 0, 0, 0.7);
+            border-color: #ff0000;
+            animation: none;
+        }
+
+        .memory-card.matched {
+            background: rgba(0, 100, 0, 0.5);
+            border-color: #00ff00;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.4);
+            cursor: default;
+        }
+
+        .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backface-visibility: hidden;
+            transition: transform 0.6s;
+            border-radius: 8px;
+        }
+
+        .card-front {
+            transform: rotateY(180deg);
+        }
+
+        .memory-card.flipped .card-back,
+        .memory-card.matched .card-back {
+            transform: rotateY(180deg);
+        }
+
+        .memory-card.flipped .card-front,
+        .memory-card.matched .card-front {
+            transform: rotateY(0deg);
+        }
+
+        .card-back::before {
+            content: '❓';
+            font-size: 3rem;
+            opacity: 0.5;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-family: 'Courier New', monospace;
+            background: rgba(139, 0, 0, 0.5);
+            color: #ff6666;
+            border: 2px solid #8b0000;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.2);
+        }
+
+        button:hover {
+            background: rgba(139, 0, 0, 0.8);
+            border-color: #ff0000;
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.5);
+            transform: translateY(-3px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        /* Victory modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: radial-gradient(ellipse at center, #2a0000 0%, #000000 100%);
+            border: 3px solid #ff0000;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            max-width: 500px;
+            box-shadow: 0 0 50px rgba(255, 0, 0, 0.8);
+            animation: flicker 3s infinite;
+        }
+
+        .modal h2 {
+            font-size: 2.5rem;
+            color: #ff0000;
+            margin-bottom: 20px;
+            animation: glow 1.5s ease-in-out infinite;
+        }
+
+        .modal p {
+            font-size: 1.2rem;
+            color: #ffaaaa;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .victory-stats {
+            background: rgba(139, 0, 0, 0.3);
+            border: 2px solid #8b0000;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .victory-stat {
+            font-size: 1.1rem;
+            margin: 10px 0;
+            color: #ff9999;
+        }
+
+        @media (max-width: 768px) {
+            .game-board {
+                grid-template-columns: repeat(5, 1fr);
+                gap: 8px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .memory-card {
+                font-size: 2rem;
+            }
+
+            .game-stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .game-board {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 5px;
+            }
+
+            .memory-card {
+                font-size: 1.5rem;
+            }
+
+            button {
+                padding: 10px 20px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔴 STRANGER THINGS 🔴</h1>
+            <p class="tagline">Memory Game - Escape the Upside Down</p>
+        </header>
+
+        <div class="game-stats">
+            <div class="stat">
+                <div class="stat-label">Moves</div>
+                <div class="stat-value" id="moves">0</div>
+            </div>
+            <div class="stat">
+                <div class="stat-label">Matches</div>
+                <div class="stat-value" id="matches">0 / 20</div>
+            </div>
+            <div class="stat">
+                <div class="stat-label">Time</div>
+                <div class="stat-value" id="timer">00:00</div>
+            </div>
+        </div>
+
+        <div class="game-board" id="game-board">
+            <!-- Cards will be generated by JavaScript -->
+        </div>
+
+        <div class="controls">
+            <button onclick="resetGame()">🔄 New Game</button>
+        </div>
+    </div>
+
+    <!-- Victory Modal -->
+    <div id="victory-modal" class="modal">
+        <div class="modal-content">
+            <h2>🎉 ESCAPED! 🎉</h2>
+            <p>Friends don't lie... and you crushed it!</p>
+            <div class="victory-stats">
+                <div class="victory-stat">⏱️ Time: <span id="final-time">00:00</span></div>
+                <div class="victory-stat">🎯 Moves: <span id="final-moves">0</span></div>
+                <div class="victory-stat">⭐ Score: <span id="final-score">0</span></div>
+            </div>
+            <button onclick="closeModal()">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        // Game state
+        let moves = 0;
+        let matches = 0;
+        let firstCard = null;
+        let secondCard = null;
+        let lockBoard = false;
+        let timerInterval = null;
+        let seconds = 0;
+
+        // Stranger Things characters and icons
+        const cards = [
+            { id: 1, icon: '👧', name: 'Eleven' },
+            { id: 2, icon: '🧇', name: 'Eggos' },
+            { id: 3, icon: '👦', name: 'Mike' },
+            { id: 4, icon: '🎮', name: 'Will' },
+            { id: 5, icon: '👨‍🦱', name: 'Dustin' },
+            { id: 6, icon: '👦🏿', name: 'Lucas' },
+            { id: 7, icon: '🚲', name: 'Bikes' },
+            { id: 8, icon: '🎄', name: 'Christmas Lights' },
+            { id: 9, icon: '📻', name: 'Radio' },
+            { id: 10, icon: '🏫', name: 'Hawkins' },
+            { id: 11, icon: '🔬', name: 'Lab' },
+            { id: 12, icon: '👹', name: 'Demogorgon' },
+            { id: 13, icon: '🕷️', name: 'Mind Flayer' },
+            { id: 14, icon: '💀', name: 'Vecna' },
+            { id: 15, icon: '🌲', name: 'Upside Down' },
+            { id: 16, icon: '⚡', name: 'Powers' },
+            { id: 17, icon: '🎯', name: 'Slingshot' },
+            { id: 18, icon: '🍦', name: 'Scoops Ahoy' },
+            { id: 19, icon: '🔦', name: 'Flashlight' },
+            { id: 20, icon: '🎲', name: 'D&D' }
+        ];
+
+        // Initialize game
+        function initGame() {
+            moves = 0;
+            matches = 0;
+            firstCard = null;
+            secondCard = null;
+            lockBoard = false;
+            seconds = 0;
+
+            updateStats();
+            startTimer();
+            createBoard();
+        }
+
+        // Create game board
+        function createBoard() {
+            const gameBoard = document.getElementById('game-board');
+            gameBoard.innerHTML = '';
+
+            // Create pairs and shuffle
+            const cardPairs = [...cards, ...cards]
+                .map((card, index) => ({ ...card, uniqueId: index }))
+                .sort(() => Math.random() - 0.5);
+
+            // Create card elements
+            cardPairs.forEach(card => {
+                const cardElement = document.createElement('div');
+                cardElement.className = 'memory-card';
+                cardElement.dataset.cardId = card.id;
+                cardElement.dataset.uniqueId = card.uniqueId;
+                
+                cardElement.innerHTML = `
+                    <div class="card-back"></div>
+                    <div class="card-front card-back">${card.icon}</div>
+                `;
+                
+                cardElement.addEventListener('click', () => flipCard(cardElement, card));
+                gameBoard.appendChild(cardElement);
+            });
+        }
+
+        // Flip card
+        function flipCard(cardElement, card) {
+            if (lockBoard) return;
+            if (cardElement.classList.contains('flipped')) return;
+            if (cardElement.classList.contains('matched')) return;
+
+            cardElement.classList.add('flipped');
+
+            if (!firstCard) {
+                firstCard = { element: cardElement, card: card };
+                return;
+            }
+
+            secondCard = { element: cardElement, card: card };
+            lockBoard = true;
+            moves++;
+            updateStats();
+
+            checkMatch();
+        }
+
+        // Check if cards match
+        function checkMatch() {
+            const isMatch = firstCard.card.id === secondCard.card.id;
+
+            if (isMatch) {
+                disableCards();
+                matches++;
+                updateStats();
+
+                if (matches === 20) {
+                    setTimeout(showVictory, 500);
+                }
+            } else {
+                unflipCards();
+            }
+        }
+
+        // Disable matched cards
+        function disableCards() {
+            firstCard.element.classList.add('matched');
+            secondCard.element.classList.add('matched');
+            resetBoard();
+        }
+
+        // Unflip cards
+        function unflipCards() {
+            setTimeout(() => {
+                firstCard.element.classList.remove('flipped');
+                secondCard.element.classList.remove('flipped');
+                resetBoard();
+            }, 1000);
+        }
+
+        // Reset board state
+        function resetBoard() {
+            [firstCard, secondCard, lockBoard] = [null, null, false];
+        }
+
+        // Update stats
+        function updateStats() {
+            document.getElementById('moves').textContent = moves;
+            document.getElementById('matches').textContent = `${matches} / 20`;
+        }
+
+        // Timer functions
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            
+            timerInterval = setInterval(() => {
+                seconds++;
+                const mins = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                document.getElementById('timer').textContent = 
+                    `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+        }
+
+        // Show victory modal
+        function showVictory() {
+            stopTimer();
+            
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            const timeString = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+            
+            // Calculate score (lower is better)
+            const score = Math.max(1000 - (moves * 10) - (seconds * 2), 0);
+            
+            document.getElementById('final-time').textContent = timeString;
+            document.getElementById('final-moves').textContent = moves;
+            document.getElementById('final-score').textContent = score;
+            document.getElementById('victory-modal').classList.add('active');
+        }
+
+        // Close modal and reset
+        function closeModal() {
+            document.getElementById('victory-modal').classList.remove('active');
+            resetGame();
+        }
+
+        // Reset game
+        function resetGame() {
+            stopTimer();
+            document.getElementById('victory-modal').classList.remove('active');
+            initGame();
+        }
+
+        // Start game when page loads
+        window.addEventListener('DOMContentLoaded', initGame);
+    </script>
+</body>
+</html>
