@@ -406,28 +406,28 @@
         let timerInterval = null;
         let seconds = 0;
 
-        // Stranger Things characters with image URLs
+        // Stranger Things characters with local image paths
         const cards = [
-            { id: 1, name: 'Eleven', image: 'https://images.unsplash.com/photo-1518684079-3c830dcef090?w=400&h=500&fit=crop' },
-            { id: 2, name: 'Mike Wheeler', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=500&fit=crop' },
-            { id: 3, name: 'Dustin Henderson', image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=500&fit=crop' },
-            { id: 4, name: 'Lucas Sinclair', image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=500&fit=crop' },
-            { id: 5, name: 'Will Byers', image: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&h=500&fit=crop' },
-            { id: 6, name: 'Max Mayfield', image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=500&fit=crop' },
-            { id: 7, name: 'Steve Harrington', image: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=400&h=500&fit=crop' },
-            { id: 8, name: 'Nancy Wheeler', image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=500&fit=crop' },
-            { id: 9, name: 'Jonathan Byers', image: 'https://images.unsplash.com/photo-1463453091185-61582044d556?w=400&h=500&fit=crop' },
-            { id: 10, name: 'Joyce Byers', image: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=400&h=500&fit=crop' },
-            { id: 11, name: 'Jim Hopper', image: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=500&fit=crop' },
-            { id: 12, name: 'Vecna', image: 'https://images.unsplash.com/photo-1509909756405-be0199881695?w=400&h=500&fit=crop' },
-            { id: 13, name: 'Demogorgon', image: 'https://images.unsplash.com/photo-1526336024174-e58f5cdd8e13?w=400&h=500&fit=crop' },
-            { id: 14, name: 'Mind Flayer', image: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400&h=500&fit=crop' },
-            { id: 15, name: 'Upside Down', image: 'https://images.unsplash.com/photo-1518818608552-195ed130cdf4?w=400&h=500&fit=crop' },
-            { id: 16, name: 'Hawkins Lab', image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=400&h=500&fit=crop' },
-            { id: 17, name: 'Christmas Lights', image: 'https://images.unsplash.com/photo-1512389142860-9c449e58a543?w=400&h=500&fit=crop' },
-            { id: 18, name: 'Eggos', image: 'https://images.unsplash.com/photo-1534352956036-cd81e27dd615?w=400&h=500&fit=crop' },
-            { id: 19, name: 'The Bike Gang', image: 'https://images.unsplash.com/photo-1507035895480-2b3156c31fc8?w=400&h=500&fit=crop' },
-            { id: 20, name: 'Scoops Ahoy', image: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400&h=500&fit=crop' }
+            { id: 1, name: 'Eleven', image: 'images/characters/eleven.jpg' },
+            { id: 2, name: 'Mike Wheeler', image: 'images/characters/mike.jpg' },
+            { id: 3, name: 'Dustin Henderson', image: 'images/characters/dustin.jpg' },
+            { id: 4, name: 'Lucas Sinclair', image: 'images/characters/lucas.jpg' },
+            { id: 5, name: 'Will Byers', image: 'images/characters/will.jpg' },
+            { id: 6, name: 'Max Mayfield', image: 'images/characters/max.jpg' },
+            { id: 7, name: 'Steve Harrington', image: 'images/characters/steve.jpg' },
+            { id: 8, name: 'Nancy Wheeler', image: 'images/characters/nancy.jpg' },
+            { id: 9, name: 'Jonathan Byers', image: 'images/characters/jonathan.jpg' },
+            { id: 10, name: 'Joyce Byers', image: 'images/characters/joyce.jpg' },
+            { id: 11, name: 'Jim Hopper', image: 'images/characters/hopper.jpg' },
+            { id: 12, name: 'Vecna', image: 'images/characters/vecna.jpg' },
+            { id: 13, name: 'Demogorgon', image: 'images/characters/demogorgon.jpg' },
+            { id: 14, name: 'Mind Flayer', image: 'images/characters/mindflayer.jpg' },
+            { id: 15, name: 'Upside Down', image: 'images/characters/upsidedown.jpg' },
+            { id: 16, name: 'Hawkins Lab', image: 'images/characters/hawkinslab.jpg' },
+            { id: 17, name: 'Christmas Lights', image: 'images/characters/christmaslights.jpg' },
+            { id: 18, name: 'Eggos', image: 'images/characters/eggos.jpg' },
+            { id: 19, name: 'The Bike Gang', image: 'images/characters/bikes.jpg' },
+            { id: 20, name: 'Scoops Ahoy', image: 'images/characters/scoopsahoy.jpg' }
         ];
 
         // Initialize game
