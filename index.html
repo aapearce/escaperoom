@@ -95,6 +95,16 @@
                         </div>
                         <div class="room-difficulty">Difficulty: ⭐⭐⭐⭐</div>
                     </div>
+                    <div class="room-card" onclick="game.startRoom('wednesday')">
+                        <div class="room-icon">🕷️</div>
+                        <h3>Wednesday's Academy</h3>
+                        <p class="room-subtitle">Nevermore's Dark Mystery</p>
+                        <div class="room-stats">
+                            <span id="wednesday-completion">⭐ Not completed</span>
+                            <span id="wednesday-time"></span>
+                        </div>
+                        <div class="room-difficulty">Difficulty: ⭐⭐⭐⭐⭐</div>
+                    </div>
                 </div>
                 <button class="back-btn" onclick="game.showMainMenu()">← Back to Menu</button>
             </div>
@@ -213,5 +223,6 @@
     <script src="rooms/egypt.js"></script>
     <script src="rooms/renaissance.js"></script>
     <script src="rooms/space.js"></script>
+    <script src="rooms/wednesday.js"></script>
 </body>
 </html>
