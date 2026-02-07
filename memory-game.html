@@ -146,19 +146,19 @@
         }
 
         .memory-card {
-            aspect-ratio: 1;
+            aspect-ratio: 0.7;
             background: rgba(139, 0, 0, 0.4);
             border: 3px solid #8b0000;
             border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.5rem;
             cursor: pointer;
             transition: all 0.3s ease;
             position: relative;
             transform-style: preserve-3d;
             box-shadow: 0 0 15px rgba(255, 0, 0, 0.2);
+            overflow: hidden;
         }
 
         .memory-card:hover:not(.flipped):not(.matched) {
@@ -181,7 +181,7 @@
             cursor: default;
         }
 
-        .card-back {
+        .card-face {
             position: absolute;
             width: 100%;
             height: 100%;
@@ -193,8 +193,35 @@
             border-radius: 8px;
         }
 
+        .card-back {
+            background: linear-gradient(135deg, #2a0000 0%, #000000 100%);
+            font-size: 4rem;
+            color: rgba(255, 0, 0, 0.3);
+        }
+
         .card-front {
             transform: rotateY(180deg);
+            background: #000;
+        }
+
+        .card-front img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .card-front .card-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.8);
+            color: #ff6666;
+            padding: 5px;
+            font-size: 0.7rem;
+            text-align: center;
+            font-weight: bold;
         }
 
         .memory-card.flipped .card-back,
@@ -205,12 +232,6 @@
         .memory-card.flipped .card-front,
         .memory-card.matched .card-front {
             transform: rotateY(0deg);
-        }
-
-        .card-back::before {
-            content: '❓';
-            font-size: 3rem;
-            opacity: 0.5;
         }
 
         .controls {
@@ -311,10 +332,6 @@
                 font-size: 2rem;
             }
 
-            .memory-card {
-                font-size: 2rem;
-            }
-
             .game-stats {
                 flex-direction: column;
                 gap: 15px;
@@ -325,10 +342,6 @@
             .game-board {
                 grid-template-columns: repeat(4, 1fr);
                 gap: 5px;
-            }
-
-            .memory-card {
-                font-size: 1.5rem;
             }
 
             button {
@@ -393,28 +406,28 @@
         let timerInterval = null;
         let seconds = 0;
 
-        // Stranger Things characters and icons
+        // Stranger Things characters with image URLs
         const cards = [
-            { id: 1, icon: '👧', name: 'Eleven' },
-            { id: 2, icon: '🧇', name: 'Eggos' },
-            { id: 3, icon: '👦', name: 'Mike' },
-            { id: 4, icon: '🎮', name: 'Will' },
-            { id: 5, icon: '👨‍🦱', name: 'Dustin' },
-            { id: 6, icon: '👦🏿', name: 'Lucas' },
-            { id: 7, icon: '🚲', name: 'Bikes' },
-            { id: 8, icon: '🎄', name: 'Christmas Lights' },
-            { id: 9, icon: '📻', name: 'Radio' },
-            { id: 10, icon: '🏫', name: 'Hawkins' },
-            { id: 11, icon: '🔬', name: 'Lab' },
-            { id: 12, icon: '👹', name: 'Demogorgon' },
-            { id: 13, icon: '🕷️', name: 'Mind Flayer' },
-            { id: 14, icon: '💀', name: 'Vecna' },
-            { id: 15, icon: '🌲', name: 'Upside Down' },
-            { id: 16, icon: '⚡', name: 'Powers' },
-            { id: 17, icon: '🎯', name: 'Slingshot' },
-            { id: 18, icon: '🍦', name: 'Scoops Ahoy' },
-            { id: 19, icon: '🔦', name: 'Flashlight' },
-            { id: 20, icon: '🎲', name: 'D&D' }
+            { id: 1, name: 'Eleven', image: 'https://images.unsplash.com/photo-1518684079-3c830dcef090?w=400&h=500&fit=crop' },
+            { id: 2, name: 'Mike Wheeler', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=500&fit=crop' },
+            { id: 3, name: 'Dustin Henderson', image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=500&fit=crop' },
+            { id: 4, name: 'Lucas Sinclair', image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=500&fit=crop' },
+            { id: 5, name: 'Will Byers', image: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&h=500&fit=crop' },
+            { id: 6, name: 'Max Mayfield', image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=500&fit=crop' },
+            { id: 7, name: 'Steve Harrington', image: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=400&h=500&fit=crop' },
+            { id: 8, name: 'Nancy Wheeler', image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=500&fit=crop' },
+            { id: 9, name: 'Jonathan Byers', image: 'https://images.unsplash.com/photo-1463453091185-61582044d556?w=400&h=500&fit=crop' },
+            { id: 10, name: 'Joyce Byers', image: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=400&h=500&fit=crop' },
+            { id: 11, name: 'Jim Hopper', image: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=500&fit=crop' },
+            { id: 12, name: 'Vecna', image: 'https://images.unsplash.com/photo-1509909756405-be0199881695?w=400&h=500&fit=crop' },
+            { id: 13, name: 'Demogorgon', image: 'https://images.unsplash.com/photo-1526336024174-e58f5cdd8e13?w=400&h=500&fit=crop' },
+            { id: 14, name: 'Mind Flayer', image: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400&h=500&fit=crop' },
+            { id: 15, name: 'Upside Down', image: 'https://images.unsplash.com/photo-1518818608552-195ed130cdf4?w=400&h=500&fit=crop' },
+            { id: 16, name: 'Hawkins Lab', image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=400&h=500&fit=crop' },
+            { id: 17, name: 'Christmas Lights', image: 'https://images.unsplash.com/photo-1512389142860-9c449e58a543?w=400&h=500&fit=crop' },
+            { id: 18, name: 'Eggos', image: 'https://images.unsplash.com/photo-1534352956036-cd81e27dd615?w=400&h=500&fit=crop' },
+            { id: 19, name: 'The Bike Gang', image: 'https://images.unsplash.com/photo-1507035895480-2b3156c31fc8?w=400&h=500&fit=crop' },
+            { id: 20, name: 'Scoops Ahoy', image: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400&h=500&fit=crop' }
         ];
 
         // Initialize game
@@ -449,8 +462,11 @@
                 cardElement.dataset.uniqueId = card.uniqueId;
                 
                 cardElement.innerHTML = `
-                    <div class="card-back"></div>
-                    <div class="card-front card-back">${card.icon}</div>
+                    <div class="card-face card-back">?</div>
+                    <div class="card-face card-front">
+                        <img src="${card.image}" alt="${card.name}" onerror="this.src='https://via.placeholder.com/400x500/8b0000/ff0000?text=${encodeURIComponent(card.name)}'">
+                        <div class="card-label">${card.name}</div>
+                    </div>
                 `;
                 
                 cardElement.addEventListener('click', () => flipCard(cardElement, card));
