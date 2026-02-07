@@ -105,6 +105,16 @@
                         </div>
                         <div class="room-difficulty">Difficulty: ⭐⭐⭐⭐⭐</div>
                     </div>
+                    <div class="room-card" onclick="game.startRoom('strangerthings')">
+                        <div class="room-icon">🔴</div>
+                        <h3>Stranger Things</h3>
+                        <p class="room-subtitle">Escape the Upside Down</p>
+                        <div class="room-stats">
+                            <span id="strangerthings-completion">⭐ Not completed</span>
+                            <span id="strangerthings-time"></span>
+                        </div>
+                        <div class="room-difficulty">Difficulty: ⭐⭐⭐⭐</div>
+                    </div>
                 </div>
                 <button class="back-btn" onclick="game.showMainMenu()">← Back to Menu</button>
             </div>
@@ -224,5 +234,6 @@
     <script src="rooms/renaissance.js"></script>
     <script src="rooms/space.js"></script>
     <script src="rooms/wednesday.js"></script>
+    <script src="rooms/strangerthings.js"></script>
 </body>
 </html>
