@@ -186,6 +186,7 @@
             width: 100%;
             height: 100%;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             backface-visibility: hidden;
@@ -201,27 +202,25 @@
 
         .card-front {
             transform: rotateY(180deg);
-            background: #000;
+            padding: 10px;
         }
 
-        .card-front img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 8px;
+        .card-icon {
+            font-size: 4rem;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 0 10px currentColor);
         }
 
-        .card-front .card-label {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(0, 0, 0, 0.8);
-            color: #ff6666;
-            padding: 5px;
-            font-size: 0.7rem;
-            text-align: center;
+        .card-name {
+            font-size: 1rem;
             font-weight: bold;
+            color: #ff6666;
+            text-align: center;
+            text-shadow: 0 0 10px #ff0000;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 5px;
+            width: 100%;
         }
 
         .memory-card.flipped .card-back,
@@ -336,6 +335,14 @@
                 flex-direction: column;
                 gap: 15px;
             }
+
+            .card-icon {
+                font-size: 3rem;
+            }
+
+            .card-name {
+                font-size: 0.8rem;
+            }
         }
 
         @media (max-width: 480px) {
@@ -347,6 +354,15 @@
             button {
                 padding: 10px 20px;
                 font-size: 1rem;
+            }
+
+            .card-icon {
+                font-size: 2rem;
+            }
+
+            .card-name {
+                font-size: 0.7rem;
+                padding: 5px;
             }
         }
     </style>
@@ -406,28 +422,28 @@
         let timerInterval = null;
         let seconds = 0;
 
-        // Stranger Things characters with local image paths
+        // Stranger Things characters with themed icons and colors
         const cards = [
-            { id: 1, name: 'Eleven', image: 'images/characters/eleven.jpg' },
-            { id: 2, name: 'Mike Wheeler', image: 'images/characters/mike.jpg' },
-            { id: 3, name: 'Dustin Henderson', image: 'images/characters/dustin.jpg' },
-            { id: 4, name: 'Lucas Sinclair', image: 'images/characters/lucas.jpg' },
-            { id: 5, name: 'Will Byers', image: 'images/characters/will.jpg' },
-            { id: 6, name: 'Max Mayfield', image: 'images/characters/max.jpg' },
-            { id: 7, name: 'Steve Harrington', image: 'images/characters/steve.jpg' },
-            { id: 8, name: 'Nancy Wheeler', image: 'images/characters/nancy.jpg' },
-            { id: 9, name: 'Jonathan Byers', image: 'images/characters/jonathan.jpg' },
-            { id: 10, name: 'Joyce Byers', image: 'images/characters/joyce.jpg' },
-            { id: 11, name: 'Jim Hopper', image: 'images/characters/hopper.jpg' },
-            { id: 12, name: 'Vecna', image: 'images/characters/vecna.jpg' },
-            { id: 13, name: 'Demogorgon', image: 'images/characters/demogorgon.jpg' },
-            { id: 14, name: 'Mind Flayer', image: 'images/characters/mindflayer.jpg' },
-            { id: 15, name: 'Upside Down', image: 'images/characters/upsidedown.jpg' },
-            { id: 16, name: 'Hawkins Lab', image: 'images/characters/hawkinslab.jpg' },
-            { id: 17, name: 'Christmas Lights', image: 'images/characters/christmaslights.jpg' },
-            { id: 18, name: 'Eggos', image: 'images/characters/eggos.jpg' },
-            { id: 19, name: 'The Bike Gang', image: 'images/characters/bikes.jpg' },
-            { id: 20, name: 'Scoops Ahoy', image: 'images/characters/scoopsahoy.jpg' }
+            { id: 1, name: 'Eleven', icon: '⚡', color: '#ff00ff' },
+            { id: 2, name: 'Mike Wheeler', icon: '🚲', color: '#4169e1' },
+            { id: 3, name: 'Dustin Henderson', icon: '🎓', color: '#ffa500' },
+            { id: 4, name: 'Lucas Sinclair', icon: '🎯', color: '#32cd32' },
+            { id: 5, name: 'Will Byers', icon: '🎨', color: '#8b4513' },
+            { id: 6, name: 'Max Mayfield', icon: '🛹', color: '#ff6347' },
+            { id: 7, name: 'Steve Harrington', icon: '🦇', color: '#daa520' },
+            { id: 8, name: 'Nancy Wheeler', icon: '📰', color: '#9370db' },
+            { id: 9, name: 'Jonathan Byers', icon: '📷', color: '#696969' },
+            { id: 10, name: 'Joyce Byers', icon: '💡', color: '#ff69b4' },
+            { id: 11, name: 'Jim Hopper', icon: '👮', color: '#4682b4' },
+            { id: 12, name: 'Vecna', icon: '💀', color: '#8b0000' },
+            { id: 13, name: 'Demogorgon', icon: '👹', color: '#b22222' },
+            { id: 14, name: 'Mind Flayer', icon: '🕷️', color: '#000000' },
+            { id: 15, name: 'Upside Down', icon: '🌲', color: '#006400' },
+            { id: 16, name: 'Hawkins Lab', icon: '🔬', color: '#708090' },
+            { id: 17, name: 'Christmas Lights', icon: '🎄', color: '#ffd700' },
+            { id: 18, name: 'Eggos', icon: '🧇', color: '#daa520' },
+            { id: 19, name: 'The Bike Gang', icon: '🚴', color: '#ff4500' },
+            { id: 20, name: 'Scoops Ahoy', icon: '🍦', color: '#00bfff' }
         ];
 
         // Initialize game
@@ -463,9 +479,9 @@
                 
                 cardElement.innerHTML = `
                     <div class="card-face card-back">?</div>
-                    <div class="card-face card-front">
-                        <img src="${card.image}" alt="${card.name}" onerror="this.src='https://via.placeholder.com/400x500/8b0000/ff0000?text=${encodeURIComponent(card.name)}'">
-                        <div class="card-label">${card.name}</div>
+                    <div class="card-face card-front" style="background: linear-gradient(135deg, ${card.color}22 0%, #000000 100%);">
+                        <div class="card-icon" style="color: ${card.color};">${card.icon}</div>
+                        <div class="card-name">${card.name}</div>
                     </div>
                 `;
                 
