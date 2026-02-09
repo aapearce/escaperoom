@@ -60,6 +60,8 @@ class Game {
             this.currentRoomData = new WednesdayRoom();
         } else if (roomId === 'strangerthings') {
             this.currentRoomData = new StrangerThingsRoom();
+        } else if (roomId === 'londonunderground') {
+            this.currentRoomData = new LondonUndergroundRoom();
         }
         
         this.currentRoomData.init();
@@ -233,7 +235,7 @@ class Game {
 
     nextRoom() {
         document.getElementById('success-modal').classList.remove('active');
-        const rooms = ['egypt', 'renaissance', 'space', 'wednesday', 'strangerthings'];
+        const rooms = ['egypt', 'renaissance', 'space', 'wednesday', 'strangerthings', 'londonunderground'];
         const currentIndex = rooms.indexOf(this.currentRoom);
         const nextIndex = (currentIndex + 1) % rooms.length;
         this.startRoom(rooms[nextIndex]);
@@ -278,7 +280,7 @@ class Game {
     }
 
     updateRoomSelection() {
-        ['egypt', 'renaissance', 'space', 'wednesday', 'strangerthings'].forEach(room => {
+        ['egypt', 'renaissance', 'space', 'wednesday', 'strangerthings', 'londonunderground'].forEach(room => {
             const completed = this.progress.completed[room];
             const completionEl = document.getElementById(`${room}-completion`);
             const timeEl = document.getElementById(`${room}-time`);
@@ -302,7 +304,7 @@ class Game {
             { id: 'first-escape', name: 'First Escape', condition: () => this.progress.totalEscapes >= 1 },
             { id: 'speed-demon', name: 'Speed Demon', condition: () => this.progress.bestTime && this.progress.bestTime < 300 },
             { id: 'no-hints', name: 'Genius', condition: () => this.hintsUsed === 0 },
-            { id: 'complete-all', name: 'Time Master', condition: () => this.progress.totalEscapes >= 5 }
+            { id: 'complete-all', name: 'Time Master', condition: () => this.progress.totalEscapes >= 6 }
         ];
         
         achievements.forEach(achievement => {
