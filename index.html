@@ -125,6 +125,16 @@
                         </div>
                         <div class="room-difficulty">Difficulty: ⭐⭐⭐</div>
                     </div>
+                    <div class="room-card" onclick="game.startRoom('londonundergroundadvanced')">
+                        <div class="room-icon">🚇</div>
+                        <h3>Tube Advanced</h3>
+                        <p class="room-subtitle">Expert Challenge (20 Puzzles)</p>
+                        <div class="room-stats">
+                            <span id="londonundergroundadvanced-completion">⭐ Not completed</span>
+                            <span id="londonundergroundadvanced-time"></span>
+                        </div>
+                        <div class="room-difficulty">Difficulty: ⭐⭐⭐⭐⭐⭐</div>
+                    </div>
                 </div>
                 <button class="back-btn" onclick="game.showMainMenu()">← Back to Menu</button>
             </div>
@@ -246,5 +256,6 @@
     <script src="rooms/wednesday.js"></script>
     <script src="rooms/strangerthings.js"></script>
     <script src="rooms/londonunderground.js"></script>
+    <script src="rooms/londonundergroundadvanced.js"></script>
 </body>
 </html>

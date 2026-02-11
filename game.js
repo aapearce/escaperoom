@@ -62,6 +62,8 @@ class Game {
             this.currentRoomData = new StrangerThingsRoom();
         } else if (roomId === 'londonunderground') {
             this.currentRoomData = new LondonUndergroundRoom();
+        } else if (roomId === 'londonundergroundadvanced') {
+            this.currentRoomData = new LondonUndergroundAdvancedRoom();
         }
         
         this.currentRoomData.init();
@@ -235,7 +237,7 @@ class Game {
 
     nextRoom() {
         document.getElementById('success-modal').classList.remove('active');
-        const rooms = ['egypt', 'renaissance', 'space', 'wednesday', 'strangerthings', 'londonunderground'];
+        const rooms = ['egypt', 'renaissance', 'space', 'wednesday', 'strangerthings', 'londonunderground', 'londonundergroundadvanced'];
         const currentIndex = rooms.indexOf(this.currentRoom);
         const nextIndex = (currentIndex + 1) % rooms.length;
         this.startRoom(rooms[nextIndex]);
@@ -280,7 +282,7 @@ class Game {
     }
 
     updateRoomSelection() {
-        ['egypt', 'renaissance', 'space', 'wednesday', 'strangerthings', 'londonunderground'].forEach(room => {
+        ['egypt', 'renaissance', 'space', 'wednesday', 'strangerthings', 'londonunderground', 'londonundergroundadvanced'].forEach(room => {
             const completed = this.progress.completed[room];
             const completionEl = document.getElementById(`${room}-completion`);
             const timeEl = document.getElementById(`${room}-time`);
@@ -304,7 +306,7 @@ class Game {
             { id: 'first-escape', name: 'First Escape', condition: () => this.progress.totalEscapes >= 1 },
             { id: 'speed-demon', name: 'Speed Demon', condition: () => this.progress.bestTime && this.progress.bestTime < 300 },
             { id: 'no-hints', name: 'Genius', condition: () => this.hintsUsed === 0 },
-            { id: 'complete-all', name: 'Time Master', condition: () => this.progress.totalEscapes >= 6 }
+            { id: 'complete-all', name: 'Time Master', condition: () => this.progress.totalEscapes >= 7 }
         ];
         
         achievements.forEach(achievement => {
